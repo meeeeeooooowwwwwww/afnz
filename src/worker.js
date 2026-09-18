@@ -10,6 +10,7 @@ const ALLOWED = new Map([
   ["/styles.css", "/styles.css"],
   ["/favicon.svg", "/favicon.svg"],
   ["/robots.txt", "/robots.txt"],
+  ["/sitemap.xml", "/sitemap.xml"],
 ]);
 
 export default {
