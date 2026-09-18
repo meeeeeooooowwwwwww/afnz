@@ -37,3 +37,21 @@ The full directory/platform product lives at **grideater.com**.
 ## Email boundary
 
 Website changes and deployments must not alter or remove MX/email configuration for `americafirst.co.nz`.
+
+
+## Legacy URL migration
+
+The production web server must preserve only the small corporate surface:
+
+- `/`
+- `/services`
+- `/about`
+- required static assets, robots and sitemap
+
+Every other historical `americafirst.co.nz` path is permanently retired and must return **HTTP 301** with:
+
+`Location: https://grideater.com/search`
+
+Do not append or forward the legacy path/query string.
+
+The web migration must not change MX or other email DNS records.
