@@ -22,11 +22,21 @@ test("legacy query strings are not forwarded", async()=>{
   assert.equal(response.headers.get("location"),"https://grideater.com/search");
 });
 
-test("corporate pages remain local", async()=>{
-  const response=await worker.fetch(new Request("https://americafirst.co.nz/services"),env);
-  assert.equal(response.status,200);
-  assert.equal(await response.text(),"/services.html");
-});
+for (const [route, asset] of [
+  ["/", "/index.html"],
+  ["/about", "/about.html"],
+  ["/projects", "/projects.html"],
+  ["/projects/grid-eater", "/projects-grid-eater.html"],
+  ["/projects/cdip", "/projects-cdip.html"],
+  ["/services", "/services.html"],
+  ["/contact", "/contact.html"],
+]) {
+  test(route+" remains local", async()=>{
+    const response=await worker.fetch(new Request("https://americafirst.co.nz"+route),env);
+    assert.equal(response.status,200);
+    assert.equal(await response.text(),asset);
+  });
+}
 
 test("sitemap remains local", async()=>{
   const response=await worker.fetch(new Request("https://americafirst.co.nz/sitemap.xml"),env);

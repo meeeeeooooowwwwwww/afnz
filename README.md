@@ -1,57 +1,48 @@
-# America First Limited — static corporate site
+# America First Limited — corporate website renderer
 
-This repository is the canonical source for the lightweight `americafirst.co.nz` corporate website.
+This repository contains the code and public rendering for `americafirst.co.nz`.
 
-## Purpose
+## Source-of-truth boundary
 
-America First Limited is the umbrella company trading as **GRID EATER**.
+**Google Drive / David OS is the canonical knowledge and substantive-content source.** This repository is the implementation layer for the approved public front end.
 
-The website may describe corporate services including:
+For material content changes:
 
-- web hosting;
-- domains;
-- business email;
-- branding;
-- websites;
-- SEO;
-- PPC / paid search;
-- related digital infrastructure and marketing services.
+1. update or verify the appropriate canonical David OS / America First Limited record first;
+2. derive audience-appropriate public copy from that record;
+3. implement the approved copy here;
+4. do not place internal notes, AI instructions, management commentary or source-of-truth guidance in rendered pages.
+
+Repository documentation may describe implementation behaviour, but it does not override the canonical Drive records for company facts, strategy, products, projects or public-positioning decisions.
+
+## Public surface
+
+The corporate website currently contains:
+
+- `/` — company introduction;
+- `/about` — company overview;
+- `/projects` — businesses and projects;
+- `/projects/grid-eater` — GRID EATER overview;
+- `/projects/cdip` — CDIP feasibility-stage overview;
+- `/services` — concise GRID EATER digital-services route;
+- `/contact` — business and project contact route.
+
+GRID EATER is a business of America First Limited. CDIP is a data-centre development project sponsored by America First Limited and is currently at feasibility stage.
 
 ## Hard architecture boundary
 
-This repository must remain a **static corporate website**.
+This repository must remain a lightweight corporate website. It must not contain or depend on the legacy America First business directory, NZBN/business-directory data, directory search/indexing, GRID EATER production databases, Typesense, crawlers/processors or operational credentials.
 
-It must not contain or depend on:
-
-- the legacy America First business directory;
-- NZBN/business-directory data;
-- directory search/indexing;
-- business data storage;
-- GRID EATER production databases;
-- GRID EATER Typesense;
-- GRID EATER crawlers/processors;
-- GRID EATER operational credentials.
-
-The full directory/platform product lives at **grideater.com**.
-
-## Email boundary
-
-Website changes and deployments must not alter or remove MX/email configuration for `americafirst.co.nz`.
-
+The operating business-discovery platform lives at `grideater.com`.
 
 ## Legacy URL migration
 
-The production web server must preserve only the small corporate surface:
+The Worker allowlists the current corporate routes and required static assets. Other retired historical `americafirst.co.nz` paths permanently redirect with HTTP 301 to:
 
-- `/`
-- `/services`
-- `/about`
-- required static assets, robots and sitemap
+`https://grideater.com/search`
 
-Every other historical `americafirst.co.nz` path is permanently retired and must return **HTTP 301** with:
+Legacy paths and query strings are not forwarded.
 
-`Location: https://grideater.com/search`
+## Email / DNS boundary
 
-Do not append or forward the legacy path/query string.
-
-The web migration must not change MX or other email DNS records.
+Website code changes and deployments must not alter or remove MX/email configuration for `americafirst.co.nz`, or make unrelated DNS changes.
