@@ -50,8 +50,7 @@ test("illustrative assets are served locally",async()=>{
 });
 
 test("legacy paths still redirect to GRID EATER search",async()=>{
- const request=new Request("https://americafirst.co.nz/business/legacy?old=1",{redirect:"manual"});
- const response=await worker.fetch(request);
+ const response=await worker.fetch("https://americafirst.co.nz/business/legacy?old=1",{redirect:"manual"});
  assert.equal(response.status,301);
  assert.equal(response.headers.get("location"),"https://grideater.com/search");
 });
