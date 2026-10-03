@@ -41,11 +41,13 @@ The site uses bespoke illustrative NZ/robot SVG imagery as future-facing brand m
 ## Release quality
 
 Before release:
-1. `npm install --no-audit --no-fund`
+1. `npm ci --no-audit --no-fund`
 2. `npm test`
 3. `npx wrangler deploy --dry-run`
 4. review the exact candidate visually at desktop/mobile sizes;
 5. deploy only the exact approved 40-character source SHA through the central guarded external-site lane;
 6. verify and disarm the lane afterward.
+
+`package-lock.json` is committed and Wrangler is pinned to the version validated in CI; dependency changes require an intentional lockfile update.
 
 A merge is not proof of a live release.
