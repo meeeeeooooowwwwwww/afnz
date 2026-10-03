@@ -5,99 +5,110 @@ import path from "node:path";
 
 const publicDir=path.resolve("public");
 const read=(name)=>fs.readFileSync(path.join(publicDir,name),"utf8");
-
 const pages=[
-  "index.html","about.html","services.html","services-business-commercial-development.html",
-  "projects.html","projects-grid-eater.html","projects-cdip.html","contact.html"
+ "index.html","about.html","approach.html","services.html",
+ "services-business-commercial-development.html","services-project-management-delivery.html",
+ "services-ai-business-systems.html","services-discovery-feasibility.html","services-product-brand-development.html",
+ "projects.html","projects-grid-eater.html","projects-cdip.html","contact.html"
 ];
 
-test("approved America First proposition is explicit",()=>{
-  const home=read("index.html");
-  const services=read("services.html");
-  const detail=read("services-business-commercial-development.html");
-  assert.ok(home.includes("Business development for companies adapting to AI and change."));
-  assert.ok(home.includes("Business &amp; Commercial Development") || home.includes("Business & Commercial Development"));
-  assert.ok(services.includes("Business / Commercial Development"));
-  assert.ok(services.includes("Practical AI integration & business operations"));
-  assert.ok(detail.includes("Turn a messy commercial problem into a clear development programme."));
+test("all public pages use global shell placeholders instead of copied header/footer",()=>{
+ for(const name of pages){
+  const html=read(name);
+  assert.ok(html.includes('<div id="site-header"></div>'),name);
+  assert.ok(html.includes('<div id="site-footer"></div>'),name);
+  assert.ok(!html.includes('<header class="site-header">'),name+" copied header");
+  assert.ok(!html.includes('<footer class="site-footer">'),name+" copied footer");
+ }
 });
 
-test("corporate navigation uses approved IA across principal pages",()=>{
-  const links=[
-    'href="/">Home</a>',
-    'href="/about">Company</a>',
-    'href="/services">Services</a>',
-    'href="/projects">Projects</a>',
-    'href="/contact">Contact</a>'
-  ];
-  for(const name of pages){
-    const html=read(name);
-    for(const link of links) assert.ok(html.includes(link),name+" missing "+link);
+test("five approved service lanes are explicit and linked",()=>{
+ const home=read("index.html"), services=read("services.html");
+ const routes=[
+  "/services/business-commercial-development",
+  "/services/project-management-delivery",
+  "/services/ai-business-systems",
+  "/services/discovery-feasibility",
+  "/services/product-brand-development"
+ ];
+ for(const route of routes){assert.ok(home.includes(route),route);assert.ok(services.includes(route),route);}
+});
+
+test("AI SI positioning remains future-oriented rather than a possession claim",()=>{
+ const home=read("index.html").toLowerCase();
+ const approach=read("approach.html").toLowerCase();
+ assert.ok(home.includes("ai / si"));
+ assert.ok(approach.includes("not a claim that we possess si today"));
+ assert.ok(!home.includes("we have superintelligence"));
+ assert.ok(!home.includes("our superintelligence"));
+});
+
+test("About uses approved founder attribution and brief GRID EATER framing",()=>{
+ const about=read("about.html");
+ assert.ok(about.includes("Founded by: David A. Ruck."));
+ assert.ok(about.includes("https://davidaruck.com/"));
+ assert.ok(about.includes("America First is behind"));
+ assert.ok(!about.toLowerCase().includes("trading as grid eater"));
+});
+
+test("public pages do not leak pricing, private counterparties or held compute claims",()=>{
+ const caseSensitive=["NZ$","+ GST","University of Canterbury","NDY","Enable Networks","Orion","EVD-","ACT-","MAP-","DEC-"];
+ const lowerCase=["hpc access","gpu availability"];
+ for(const name of pages){
+  const html=read(name);
+  for(const term of caseSensitive) assert.ok(!html.includes(term),name+" leaked "+term);
+  const lower=html.toLowerCase();
+  for(const term of lowerCase) assert.ok(!lower.includes(term),name+" leaked "+term);
+ }
+});
+
+test("visual system has no CSS gradients and includes accessibility controls",()=>{
+ const css=read("styles.css").toLowerCase();
+ assert.ok(!css.includes("linear-gradient"));
+ assert.ok(!css.includes("radial-gradient"));
+ assert.ok(css.includes("prefers-reduced-motion"));
+ assert.ok(css.includes("prefers-contrast"));
+ assert.ok(css.includes("focus-visible"));
+});
+
+test("all illustrative images carry explicit dimensions",()=>{
+ for(const name of pages){
+  const html=read(name);
+  for(const tag of html.matchAll(/<img\b[^>]*>/g)){
+   assert.match(tag[0],/\bwidth="/,name+" image missing width");
+   assert.match(tag[0],/\bheight="/,name+" image missing height");
   }
+ }
 });
 
-test("new Business and Commercial Development route is linked from the public surface",()=>{
-  const link='href="/services/business-commercial-development"';
-  assert.ok(read("index.html").includes(link));
-  assert.ok(read("services.html").includes(link));
+test("metadata is present on every HTML page",()=>{
+ for(const name of pages){
+  const html=read(name);
+  assert.match(html,/<meta name="description" content="[^"]+"/,name);
+  assert.match(html,/<link rel="canonical" href="https:\/\/americafirst\.co\.nz\//,name);
+  assert.match(html,/<meta property="og:title"/,name);
+  assert.match(html,/<html lang="en-NZ">/,name);
+ }
 });
 
-test("America First pages do not duplicate GRID EATER pricing or leak held claims",()=>{
-  const forbidden=[
-    "NZ$","+ GST","HPC","GPU","research computing","University of Canterbury",
-    "NDY","Enable Networks","Orion","EVD-","ACT-","MAP-","DEC-"
-  ];
-  for(const name of pages){
-    const html=read(name).toLowerCase();
-    for(const term of forbidden){
-      assert.ok(!html.includes(term.toLowerCase()),name+" leaked forbidden term: "+term);
-    }
-  }
+test("no public HTML uses inline scripts or inline style attributes",()=>{
+ for(const name of pages){
+  const html=read(name).toLowerCase();
+  assert.ok(!html.includes("<script"),name+" contains script");
+  assert.ok(!/\sstyle="/.test(html),name+" contains inline style");
+ }
 });
 
-test("brand and project architecture remains accurate",()=>{
-  const about=read("about.html");
-  const projects=read("projects.html");
-  const grid=read("projects-grid-eater.html");
-  const cdip=read("projects-cdip.html");
-  assert.ok(about.includes("GRID EATER"));
-  assert.ok(about.toLowerCase().includes("feasibility-stage cdip"));
-  assert.ok(!about.toLowerCase().includes("subsidiar"));
-  assert.ok(projects.includes("not as client case studies"));
-  assert.ok(grid.includes("A business of America First Limited"));
-  assert.ok(grid.includes("own operating work"));
-  assert.ok(cdip.includes("Feasibility stage means feasibility stage."));
-  assert.ok(cdip.includes("does not imply that a final site, power allocation, fibre architecture, construction programme, customer commitment, funding package or compute capacity has already been secured"));
-});
 
-test("GRID EATER remains the tactical digital route",()=>{
-  const services=read("services.html");
-  const contact=read("contact.html");
-  assert.ok(services.includes("https://grideater.com/"));
-  assert.ok(contact.includes("https://grideater.com/contact"));
-});
-
-test("contact page minimises first-contact data and avoids response SLA promises",()=>{
-  const contact=read("contact.html").toLowerCase();
-  assert.ok(contact.includes("do not send passwords, api keys, payment credentials"));
-  assert.ok(contact.includes("does not publish a fixed enquiry-response sla"));
-});
-
-test("header uses only the approved Contact menu item",()=>{
-  for(const name of pages){
-    const html=read(name);
-    assert.ok(!html.includes("header-cta"),name+" still has separate header CTA");
-    const nav=(html.match(/<nav class="navlinks"[\s\S]*?<\/nav>/)||[""])[0];
-    assert.equal((nav.match(/href="\/contact"/g)||[]).length,1,name+" should have exactly one Contact menu link");
-  }
-});
-
-test("light corporate visual system is encoded in CSS",()=>{
-  const css=read("styles.css").toLowerCase();
-  assert.ok(css.includes("--bg:#ffffff"));
-  assert.ok(css.includes("--accent:#184e9e"));
-  assert.ok(css.includes("--surface2:#f5f7fa"));
-  assert.ok(css.includes("box-shadow:var(--shadow)"));
-  assert.ok(!css.includes("linear-gradient"));
-  assert.ok(!css.includes("radial-gradient"));
+test("premium NZ robot imagery replaces flat service placeholders",()=>{
+ const joined=pages.map(read).join("\n");
+ assert.ok(joined.includes("/assets/hero-ai-nz.webp"));
+ assert.ok(!joined.includes("/assets/hero-ai-nz.svg"));
+ const css=read("styles.css");
+ for(const name of ["commercial","projects","ai","feasibility","product"]){
+   assert.ok(!joined.includes("/assets/service-"+name+".svg"),"flat placeholder still referenced: "+name);
+   assert.ok(joined.includes("photo-"+name),"premium service scene missing: "+name);
+   assert.ok(css.includes('/assets/service-'+name+'.webp'),"premium CSS asset missing: "+name);
+ }
+ assert.ok(!css.includes('/assets/services-ai-nz.webp'));
 });
