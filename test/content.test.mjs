@@ -82,3 +82,22 @@ test("contact page minimises first-contact data and avoids response SLA promises
   assert.ok(contact.includes("do not send passwords, api keys, payment credentials"));
   assert.ok(contact.includes("does not publish a fixed enquiry-response sla"));
 });
+
+test("header uses only the approved Contact menu item",()=>{
+  for(const name of pages){
+    const html=read(name);
+    assert.ok(!html.includes("header-cta"),name+" still has separate header CTA");
+    const nav=(html.match(/<nav class="navlinks"[\s\S]*?<\/nav>/)||[""])[0];
+    assert.equal((nav.match(/href="\/contact"/g)||[]).length,1,name+" should have exactly one Contact menu link");
+  }
+});
+
+test("light corporate visual system is encoded in CSS",()=>{
+  const css=read("styles.css").toLowerCase();
+  assert.ok(css.includes("--bg:#ffffff"));
+  assert.ok(css.includes("--accent:#184e9e"));
+  assert.ok(css.includes("--surface2:#f5f7fa"));
+  assert.ok(css.includes("box-shadow:var(--shadow)"));
+  assert.ok(!css.includes("linear-gradient"));
+  assert.ok(!css.includes("radial-gradient"));
+});
