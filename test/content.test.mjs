@@ -18,7 +18,7 @@ test("approved America First proposition is explicit",()=>{
   assert.ok(home.includes("Business development for companies adapting to AI and change."));
   assert.ok(home.includes("Business &amp; Commercial Development") || home.includes("Business & Commercial Development"));
   assert.ok(services.includes("Business / Commercial Development"));
-  assert.ok(services.includes("Practical AI integration &amp; business operations"));
+  assert.ok(services.includes("Practical AI integration & business operations"));
   assert.ok(detail.includes("Turn a messy commercial problem into a clear development programme."));
 });
 
