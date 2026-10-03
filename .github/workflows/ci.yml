@@ -16,4 +16,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-      - run: npm test
+      - name: Install declared dependencies
+        run: npm install --no-audit --no-fund
+      - name: Run regression tests
+        run: npm test
+      - name: Verify Cloudflare Worker dry-run
+        run: npx wrangler deploy --dry-run
