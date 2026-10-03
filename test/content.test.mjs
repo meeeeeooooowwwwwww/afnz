@@ -98,3 +98,16 @@ test("no public HTML uses inline scripts or inline style attributes",()=>{
   assert.ok(!/\sstyle="/.test(html),name+" contains inline style");
  }
 });
+
+
+test("premium NZ robot imagery replaces flat service placeholders",()=>{
+ const joined=pages.map(read).join("\n");
+ assert.ok(joined.includes("/assets/hero-ai-nz.webp"));
+ assert.ok(!joined.includes("/assets/hero-ai-nz.svg"));
+ for(const name of ["commercial","projects","ai","feasibility","product"]){
+   assert.ok(!joined.includes("/assets/service-"+name+".svg"),"flat placeholder still referenced: "+name);
+   assert.ok(joined.includes("photo-"+name),"premium service scene missing: "+name);
+ }
+ const css=read("styles.css");
+ assert.ok(css.includes('/assets/services-ai-nz.webp'));
+});
