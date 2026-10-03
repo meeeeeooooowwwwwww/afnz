@@ -17,3 +17,5 @@
 @media(prefers-contrast:more){:root{--line:#9fb2c5}.service-card,.info-card,.project-card,.contact-card{border-width:2px}}
 
 .info-card p + p{margin-top:14px}.info-card .text-link{display:inline-block;margin-top:18px}
+
+.split-media img[src="/assets/hero-ai-nz.webp"]{object-position:88% center}
