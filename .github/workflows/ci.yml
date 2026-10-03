@@ -6,7 +6,7 @@ on:
   pull_request:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: afnz-ci-${{ github.workflow }}-${{ github.event.pull_request.head.sha || github.sha }}
@@ -18,22 +18,6 @@ jobs:
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v6
-        with:
-          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.ref || github.ref_name }}
-      - name: Import founder-approved premium imagery
-        if: ${{ github.event_name == 'pull_request' && hashFiles('.asset-import/part-*') != '' }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          cat .asset-import/part-* | base64 --decode > /tmp/afnz-site-assets.zip
-          mkdir -p public/assets
-          unzip -o /tmp/afnz-site-assets.zip -d public/assets
-          rm -rf .asset-import
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -A public/assets .asset-import
-          git commit -m "assets: add founder-approved premium NZ robot imagery"
-          git push origin HEAD:${{ github.event.pull_request.head.ref }}
       - uses: actions/setup-node@v7
         with:
           node-version: 24
