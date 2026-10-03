@@ -24,10 +24,10 @@ The corporate website currently contains:
 - `/projects` — businesses and projects;
 - `/projects/grid-eater` — GRID EATER overview;
 - `/projects/cdip` — CDIP feasibility-stage overview;
-- `/services` — concise GRID EATER digital-services route;
+- `/services` — high-level America First digital/brand/technology capability, routing current commercial service detail to GRID EATER;
 - `/contact` — business and project contact route.
 
-GRID EATER is a business of America First Limited. CDIP is a data-centre development project sponsored by America First Limited and is currently at feasibility stage.
+GRID EATER is a business of America First Limited and the primary customer-facing route for current digital products and services. America First may describe digital agency, branding, web, data and AI/automation capability at a corporate level without duplicating the GRID EATER catalogue or pricing. CDIP is a data-centre development project sponsored by America First Limited and is currently at feasibility stage.
 
 ## Hard architecture boundary
 
