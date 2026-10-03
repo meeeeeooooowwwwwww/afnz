@@ -42,7 +42,7 @@ for(const [route,marker] of routes){
 }
 
 test("illustrative assets are served locally",async()=>{
- for(const asset of ["/assets/hero-ai-nz.webp","/assets/services-ai-nz.webp","/assets/tech-grid.svg","/assets/tech-nodes.svg"]){
+ for(const asset of ["/assets/hero-ai-nz.webp","/assets/service-commercial.webp","/assets/service-projects.webp","/assets/service-ai.webp","/assets/service-feasibility.webp","/assets/service-product.webp","/assets/tech-grid.svg","/assets/tech-nodes.svg"]){
   const response=await worker.fetch("https://americafirst.co.nz"+asset);
   assert.equal(response.status,200,asset);
   assert.match(response.headers.get("cache-control")||"",/max-age=86400/);
@@ -60,4 +60,14 @@ test("global navigation active state follows the current route",async()=>{
  const body=await response.text();
  assert.ok(body.includes('<a href="/services" aria-current="page">Services</a>'));
  assert.ok(!body.includes('<a href="/about" aria-current="page">About</a>'));
+});
+
+
+test("premium service artwork uses individual local assets rather than the retired sprite",async()=>{
+ const cssResponse=await worker.fetch("https://americafirst.co.nz/styles.css");
+ const css=await cssResponse.text();
+ for(const name of ["service-commercial.webp","service-projects.webp","service-ai.webp","service-feasibility.webp","service-product.webp"]){
+  assert.ok(css.includes("/assets/"+name),name);
+ }
+ assert.ok(!css.includes("services-ai-nz.webp"));
 });
