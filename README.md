@@ -36,7 +36,7 @@ Cloudflare Static Assets remains configured with `html_handling = "none"`. Do no
 
 ## Visual system
 
-The site uses bespoke illustrative NZ/robot SVG imagery as future-facing brand material. It is illustrative, not evidence of owned robots, facilities, customers or deployed client systems. Do not introduce fake team imagery, invented client logos, unsupported performance charts or infrastructure claims.
+The site uses bespoke model-generated NZ/robot imagery as future-facing brand material. The hero is an optimized WebP and the five service scenes are packed into one optimized WebP sprite to reduce requests and payload. It is illustrative, not evidence of owned robots, facilities, customers or deployed client systems. Do not introduce fake team imagery, invented client logos, unsupported performance charts or infrastructure claims.
 
 ## Release quality
 
