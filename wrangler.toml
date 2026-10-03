@@ -2,6 +2,11 @@ name = "americafirst-co-nz"
 main = "src/worker.js"
 compatibility_date = "2026-09-19"
 
+routes = [
+  { pattern = "americafirst.co.nz/*", zone_name = "americafirst.co.nz" },
+  { pattern = "www.americafirst.co.nz/*", zone_name = "americafirst.co.nz" }
+]
+
 [assets]
 directory = "./public"
 binding = "ASSETS"
