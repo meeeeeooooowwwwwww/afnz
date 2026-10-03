@@ -36,7 +36,7 @@ test("brand architecture remains accurate",()=>{
 });
 
 test("corporate navigation exposes Capabilities across principal pages",()=>{
-  for(const name of ["index.html","about.html","projects.html","projects-grid-eater.html","services.html","contact.html"]){
+  for(const name of ["index.html","about.html","projects.html","projects-grid-eater.html","projects-cdip.html","services.html","contact.html"]){
     assert.match(read(name),/href="\/services">Capabilities<\/a>/, name);
   }
 });
