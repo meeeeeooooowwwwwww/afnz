@@ -1,61 +1,51 @@
-# America First Limited — corporate website renderer
+# America First Limited — corporate website
 
-This repository contains the code and public rendering for `americafirst.co.nz`.
+This repository renders `americafirst.co.nz`.
 
-## Source-of-truth boundary
+## Authority boundary
 
-**Google Drive / David OS is the canonical knowledge and substantive-content source.** This repository is the implementation layer for the approved public front end.
+Google Drive / David OS is the substantive source of truth. This repository implements founder-approved public copy, visual design, routes and release behaviour.
 
-For material content changes:
+## Current public direction
 
-1. update or verify the appropriate canonical David OS / America First Limited record first;
-2. derive audience-appropriate public copy from that record;
-3. implement only founder-approved public copy/assets here;
-4. do not place internal notes, AI instructions, evidence IDs, management commentary or source-of-truth guidance in rendered pages.
+America First is presented as a founder-led New Zealand company working across AI / advanced intelligence, business development, systems and project delivery.
 
-Repository documentation may describe implementation behaviour, but it does not override canonical Drive records for company facts, strategy, products, projects, service scope or public-positioning decisions.
+Current service families:
+- Business & Commercial Development
+- Project Management & Delivery
+- AI & Business Systems
+- Discovery & Feasibility
+- Product & Brand Development
 
-## Approved public surface
+“AI / SI” language is future-oriented: the company works with current AI today and designs for increasingly capable intelligence systems. The site must not imply that America First currently possesses literal superintelligence.
 
-The corporate website contains:
+## Global shell
 
-- `/` — Business / Commercial Development proposition and orientation;
-- `/about` — Company;
-- `/services` — high-level corporate service index;
-- `/services/business-commercial-development` — the single approved detailed corporate service page;
-- `/projects` — America First businesses and sponsored projects;
-- `/projects/grid-eater` — GRID EATER overview;
-- `/projects/cdip` — CDIP feasibility-stage overview;
-- `/contact` — routed business/project enquiry page.
+The header and footer are single-source global components in `src/site-shell.js`. Static public pages contain only `#site-header` and `#site-footer` placeholders. The Cloudflare Worker injects the global shell server-side with HTMLRewriter, so delivered HTML remains visible to users and crawlers without copied navigation drift.
 
-Business / Commercial Development is the lead America First service family. Practical AI integration is a supporting capability inside that work, not a separate page family or AI-agency identity.
+## Rendering / routing
 
-GRID EATER is a business of America First Limited and remains the primary customer-facing route for current tactical digital products and services. America First does not duplicate the GRID EATER price/package ladder.
+`src/worker.js` owns:
+- approved extensionless page routes;
+- the `/assets/` static-asset boundary;
+- global header/footer injection;
+- security/privacy response headers;
+- legacy redirect handling.
 
-CDIP is a data-centre development project sponsored by America First Limited and remains at feasibility stage. Public material must not imply an operational facility, secured site/power/fibre/funding/customers/capacity or private counterparty endorsement.
+Cloudflare Static Assets remains configured with `html_handling = "none"`. Do not remove that while the Worker maps extensionless routes to explicit `.html` files. Real Wrangler integration tests permanently cover this behaviour.
 
-## Visual boundary
+## Visual system
 
-Keep the site restrained and corporate: strong typography, whitespace, code-built conceptual diagrams and factual company-owned imagery where approved. Do not use fake teams/offices, generic handshake stock, neon AI imagery, speculative data-centre renders presented as real, fabricated performance charts or third-party/client logos without permission.
+The site uses bespoke illustrative NZ/robot SVG imagery as future-facing brand material. It is illustrative, not evidence of owned robots, facilities, customers or deployed client systems. Do not introduce fake team imagery, invented client logos, unsupported performance charts or infrastructure claims.
 
-## Hard architecture boundary
+## Release quality
 
-This repository must remain a lightweight corporate website. It must not contain or depend on the legacy America First business directory, NZBN/business-directory data, GRID EATER production databases, Typesense, crawlers/processors or operational credentials.
+Before release:
+1. `npm install --no-audit --no-fund`
+2. `npm test`
+3. `npx wrangler deploy --dry-run`
+4. review the exact candidate visually at desktop/mobile sizes;
+5. deploy only the exact approved 40-character source SHA through the central guarded external-site lane;
+6. verify and disarm the lane afterward.
 
-The operating business-discovery platform lives at `grideater.com`.
-
-## Legacy URL migration
-
-The Worker allowlists approved corporate routes and required static assets. Other retired historical `americafirst.co.nz` paths permanently redirect with HTTP 301 to:
-
-`https://grideater.com/search`
-
-Legacy paths and query strings are not forwarded.
-
-## Email / DNS boundary
-
-Website code changes and deployments must not alter or remove MX/email configuration for `americafirst.co.nz`, or make unrelated DNS changes.
-
-## Release boundary
-
-A PR/merge is not proof of a live release. Production deployment is controlled separately through the existing central guarded external-site deployment path, using an exact approved source SHA and a later release gate.
+A merge is not proof of a live release.
