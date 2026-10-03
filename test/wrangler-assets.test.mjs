@@ -42,7 +42,7 @@ for(const [route,marker] of routes){
 }
 
 test("illustrative assets are served locally",async()=>{
- for(const asset of ["/assets/hero-ai-nz.svg","/assets/service-commercial.svg","/assets/service-projects.svg","/assets/service-ai.svg","/assets/service-feasibility.svg","/assets/service-product.svg","/assets/tech-grid.svg","/assets/tech-nodes.svg"]){
+ for(const asset of ["/assets/hero-ai-nz.webp","/assets/services-ai-nz.webp","/assets/tech-grid.svg","/assets/tech-nodes.svg"]){
   const response=await worker.fetch("https://americafirst.co.nz"+asset);
   assert.equal(response.status,200,asset);
   assert.match(response.headers.get("cache-control")||"",/max-age=86400/);
