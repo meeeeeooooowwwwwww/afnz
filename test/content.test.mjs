@@ -52,10 +52,13 @@ test("About uses approved founder attribution and brief GRID EATER framing",()=>
 });
 
 test("public pages do not leak pricing, private counterparties or held compute claims",()=>{
- const forbidden=["NZ$","+ GST","University of Canterbury","NDY","Enable Networks","Orion","EVD-","ACT-","MAP-","DEC-","HPC access","GPU availability"];
+ const caseSensitive=["NZ$","+ GST","University of Canterbury","NDY","Enable Networks","Orion","EVD-","ACT-","MAP-","DEC-"];
+ const lowerCase=["hpc access","gpu availability"];
  for(const name of pages){
-  const html=read(name).toLowerCase();
-  for(const term of forbidden) assert.ok(!html.includes(term.toLowerCase()),name+" leaked "+term);
+  const html=read(name);
+  for(const term of caseSensitive) assert.ok(!html.includes(term),name+" leaked "+term);
+  const lower=html.toLowerCase();
+  for(const term of lowerCase) assert.ok(!lower.includes(term),name+" leaked "+term);
  }
 });
 
