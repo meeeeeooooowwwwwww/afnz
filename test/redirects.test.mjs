@@ -44,3 +44,9 @@ test("sitemap remains local", async()=>{
   assert.equal(response.status,200);
   assert.equal(await response.text(),"/sitemap.xml");
 });
+
+test("www redirects permanently to the canonical host without losing the path",async()=>{
+ const response=await worker.fetch(new Request("https://www.americafirst.co.nz/about/david-ruck?source=profile"),env);
+ assert.equal(response.status,301);
+ assert.equal(response.headers.get("location"),"https://americafirst.co.nz/about/david-ruck?source=profile");
+});

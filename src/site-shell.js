@@ -44,7 +44,7 @@ export function renderFooter() {
         </a>
         <p>Founder-led business development, AI systems and project delivery from Christchurch, New Zealand.</p>
       </div>
-      <div><strong class="footer-title">Company</strong><a href="/about">About</a><a href="/approach">Our Approach</a><a href="/projects">Projects</a><a href="/contact">Contact</a></div>
+      <div><strong class="footer-title">Company</strong><a href="/about">About</a><a href="/about/david-ruck">David Ruck — The Founder</a><a href="/approach">Our Approach</a><a href="/projects">Projects</a><a href="/contact">Contact</a></div>
       <div><strong class="footer-title">Services</strong><a href="/services/business-commercial-development">Business &amp; Commercial</a><a href="/services/project-management-delivery">Project Management</a><a href="/services/ai-business-systems">AI &amp; Business Systems</a><a href="/services/discovery-feasibility">Discovery &amp; Feasibility</a><a href="/services/product-brand-development">Product &amp; Brand</a></div>
       <div><strong class="footer-title">Connect</strong><a href="mailto:david@americafirst.co.nz">david@americafirst.co.nz</a><a href="https://davidaruck.com/" rel="external">Founded by: David A. Ruck.</a><a href="https://grideater.com/" rel="external">GRID EATER ↗</a></div>
     </div>

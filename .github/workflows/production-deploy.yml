@@ -125,6 +125,7 @@ jobs:
           routes=(
             "/"
             "/about"
+            "/about/david-ruck"
             "/approach"
             "/services"
             "/services/business-commercial-development"
@@ -152,6 +153,6 @@ jobs:
             echo "AFNZ_LIVE_ASSET_PASS=$asset"
           done
           curl -sS "$base/" > "$RUNNER_TEMP/home.html"
-          grep -Fq 'New Zealand business, technology and project development' "$RUNNER_TEMP/home.html"
+          grep -Fq 'Commercial vision.' "$RUNNER_TEMP/home.html"
           grep -Fq '/assets/hero-ai-nz.webp' "$RUNNER_TEMP/home.html"
           echo "AFNZ_LIVE_PREMIUM_CANDIDATE=PASS"

@@ -7,19 +7,20 @@ test.before(async()=>{worker=await unstable_startWorker({config:"wrangler.toml"}
 test.after(async()=>{if(worker)await worker.dispose();});
 
 const routes=[
- ["/","Turning opportunity into"],
+ ["/","Commercial vision."],
  ["/about","Founded by: David A. Ruck."],
- ["/approach","Evidence first."],
- ["/services","Five service families"],
- ["/services/business-commercial-development","Turn a messy commercial problem"],
- ["/services/project-management-delivery","Give complicated work structure"],
- ["/services/ai-business-systems","Use AI where it improves"],
- ["/services/discovery-feasibility","Make the important decision"],
- ["/services/product-brand-development","Build the proposition"],
- ["/projects","Our own operating and development work."],
+ ["/about/david-ruck","<h1>David Ruck</h1>"],
+ ["/approach","Clear direction. Faster development."],
+ ["/services","Develop the opportunity."],
+ ["/services/business-commercial-development","Build the commercial case."],
+ ["/services/project-management-delivery","Give ambitious projects"],
+ ["/services/ai-business-systems","Put AI to work"],
+ ["/services/discovery-feasibility","Know what matters"],
+ ["/services/product-brand-development","Build an offer people understand"],
+ ["/projects","A history of building."],
  ["/projects/grid-eater","America First is behind GRID EATER."],
- ["/projects/cdip","Feasibility before commitment."],
- ["/contact","Start with what you are trying to solve."]
+ ["/projects/cdip","Developing the case for Canterbury"],
+ ["/contact","Let’s put your next move into focus."]
 ];
 
 for(const [route,marker] of routes){
@@ -54,6 +55,8 @@ test("legacy paths still redirect to GRID EATER search",async()=>{
  assert.equal(response.status,301);
  assert.equal(response.headers.get("location"),"https://grideater.com/search");
 });
+
+
 
 test("global navigation active state follows the current route",async()=>{
  const response=await worker.fetch("https://americafirst.co.nz/services/ai-business-systems");

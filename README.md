@@ -19,6 +19,14 @@ Current service families:
 
 “AI / SI” language is future-oriented: the company works with current AI today and designs for increasingly capable intelligence systems. The site must not imply that America First currently possesses literal superintelligence.
 
+Public copy is sourced from Company Brand & Communications Handbook P16/P17. Lead with concrete work, commercial reasons and experienced direction of AI. Keep internal claim controls out of public marketing prose while preserving factual professional responsibilities and project status.
+
+The founder page is `/about/david-ruck`, titled “David Ruck | Founder of America First Limited”, linked from About and the global footer. Projects distinguishes current company projects, the founder's earlier ventures, and his TelstraClear/HRV employment experience. Historical roles are not America First client endorsements.
+
+## Search identity
+
+All 14 pages have canonical URLs, unique descriptions, social metadata and JSON-LD. Organization/WebSite identify America First Limited in Christchurch, New Zealand; ProfilePage/Person connect David Ruck to the company and his personal website. The sitemap covers every canonical route. The Worker permanently redirects the www host to the primary domain. Structured data is non-executable and must match visible content; do not add invented ratings, results or credentials.
+
 ## Global shell
 
 The header and footer are single-source global components in `src/site-shell.js`. Static public pages contain only `#site-header` and `#site-footer` placeholders. The Cloudflare Worker injects the global shell server-side with HTMLRewriter, so delivered HTML remains visible to users and crawlers without copied navigation drift.

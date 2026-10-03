@@ -15,3 +15,5 @@
 @media(max-width:560px){.shell{width:min(calc(100% - 28px),var(--max))}.hero-tech h1{font-size:3.15rem}.hero-media{min-height:330px}.hero-badge{right:14px;top:14px}.service-grid,.content-grid,.contact-grid,.process-grid,.cap-grid{grid-template-columns:1fr}.service-deck{margin-top:0;padding-top:18px}.service-card{min-height:0}.service-card h2{min-height:0}.cap-item{border-right:0!important;border-bottom:1px solid #dbe5ef}.cap-item:last-child{border-bottom:0}.section{padding:68px 0}.page-hero{padding:64px 0 48px}.page-hero h1{font-size:3rem}.footer-grid{grid-template-columns:1fr}.footer-brand{grid-column:auto}.footer-base{flex-direction:column;gap:6px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.service-card,.btn{transition:none}.service-card:hover,.btn:hover{transform:none}}
 @media(prefers-contrast:more){:root{--line:#9fb2c5}.service-card,.info-card,.project-card,.contact-card{border-width:2px}}
+
+.info-card p + p{margin-top:14px}.info-card .text-link{display:inline-block;margin-top:18px}
