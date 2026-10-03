@@ -1,0 +1,157 @@
+name: AFNZ Production Deploy
+
+on:
+  pull_request:
+    paths:
+      - .github/workflows/production-deploy.yml
+      - .github/production-deploy/request.json
+  push:
+    branches:
+      - main
+    paths:
+      - .github/production-deploy/request.json
+
+permissions:
+  contents: read
+
+concurrency:
+  group: afnz-production-deploy
+  cancel-in-progress: false
+
+jobs:
+  prove:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    outputs:
+      deploy_requested: ${{ steps.request.outputs.deploy_requested }}
+      target_sha: ${{ steps.request.outputs.target_sha }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Validate explicit deployment request
+        id: request
+        shell: bash
+        run: |
+          set -euo pipefail
+          node - <<'NODE'
+          const fs = require('node:fs');
+          const req = JSON.parse(fs.readFileSync('.github/production-deploy/request.json', 'utf8'));
+          const out = process.env.GITHUB_OUTPUT;
+          if (req.operation === 'none') {
+            if (req.requestedAt !== null || req.targetSha !== null) {
+              throw new Error('Disarmed request must use requestedAt=null and targetSha=null');
+            }
+            fs.appendFileSync(out, 'deploy_requested=false\n');
+            fs.appendFileSync(out, 'target_sha=\n');
+            console.log('AFNZ_PRODUCTION_REQUEST=DISARMED');
+            process.exit(0);
+          }
+          if (req.operation !== 'deploy-exact-sha') throw new Error('Unsupported operation');
+          if (!/^[0-9a-f]{40}$/.test(req.targetSha || '')) throw new Error('targetSha must be a full commit SHA');
+          if (!Number.isFinite(Date.parse(req.requestedAt))) throw new Error('requestedAt must be ISO-compatible');
+          fs.appendFileSync(out, 'deploy_requested=true\n');
+          fs.appendFileSync(out, `target_sha=${req.targetSha}\n`);
+          console.log(`AFNZ_PRODUCTION_TARGET=${req.targetSha}`);
+          NODE
+          TARGET="$(node -p "require('./.github/production-deploy/request.json').targetSha || ''")"
+          if [ -n "$TARGET" ]; then
+            git cat-file -e "$TARGET^{commit}"
+            git merge-base --is-ancestor "$TARGET" "$GITHUB_SHA"
+          fi
+
+      - name: Checkout immutable target
+        if: steps.request.outputs.deploy_requested == 'true'
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ steps.request.outputs.target_sha }}
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v7
+        if: steps.request.outputs.deploy_requested == 'true'
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Prove immutable target
+        if: steps.request.outputs.deploy_requested == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ steps.request.outputs.target_sha }}"
+          git diff --exit-code
+          npm ci --no-audit --no-fund
+          npm test
+          npx wrangler deploy --dry-run
+          echo "AFNZ_TARGET_PROOF=PASS"
+          echo "AFNZ_TARGET_SHA=$(git rev-parse HEAD)"
+
+  deploy:
+    if: github.event_name != 'pull_request' && needs.prove.outputs.deploy_requested == 'true'
+    needs: prove
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      CLOUDFLARE_API_KEY: ${{ secrets.CLOUDFLARE_GLOBAL }}
+      CLOUDFLARE_EMAIL: ${{ secrets.CLOUDFLARE_EMAIL }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ needs.prove.outputs.target_sha }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+
+      - name: Deploy exact proven revision
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = "${{ needs.prove.outputs.target_sha }}"
+          git diff --exit-code
+          npx wrangler deploy --message "AFNZ exact release ${{ needs.prove.outputs.target_sha }}" | tee "$RUNNER_TEMP/afnz-deploy.log"
+          echo "AFNZ_DEPLOYED_SHA=$(git rev-parse HEAD)"
+          grep -E 'Version ID|Uploaded|Deployed|Total Upload' "$RUNNER_TEMP/afnz-deploy.log" || true
+          echo "AFNZ_DEPLOY=PASS"
+
+      - name: Verify live production routes and premium assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          base="https://americafirst.co.nz"
+          routes=(
+            "/"
+            "/about"
+            "/approach"
+            "/services"
+            "/services/business-commercial-development"
+            "/services/project-management-delivery"
+            "/services/ai-business-systems"
+            "/services/discovery-feasibility"
+            "/services/product-brand-development"
+            "/projects"
+            "/projects/grid-eater"
+            "/projects/cdip"
+            "/contact"
+          )
+          for route in "${routes[@]}"; do
+            code="$(curl -sS -L -o "$RUNNER_TEMP/page.html" -w '%{http_code}' "$base$route")"
+            test "$code" = "200"
+            grep -Fq 'AMERICA FIRST' "$RUNNER_TEMP/page.html"
+            grep -Fq 'site-header' "$RUNNER_TEMP/page.html"
+            grep -Fq 'site-footer' "$RUNNER_TEMP/page.html"
+            echo "AFNZ_LIVE_ROUTE_PASS=$route"
+          done
+          for asset in             hero-ai-nz.webp             service-ai.webp             service-commercial.webp             service-feasibility.webp             service-product.webp             service-projects.webp
+          do
+            code="$(curl -sS -o /dev/null -w '%{http_code}' "$base/assets/$asset")"
+            test "$code" = "200"
+            echo "AFNZ_LIVE_ASSET_PASS=$asset"
+          done
+          curl -sS "$base/" > "$RUNNER_TEMP/home.html"
+          grep -Fq 'New Zealand business, technology and project development' "$RUNNER_TEMP/home.html"
+          grep -Fq '/assets/hero-ai-nz.webp' "$RUNNER_TEMP/home.html"
+          echo "AFNZ_LIVE_PREMIUM_CANDIDATE=PASS"
