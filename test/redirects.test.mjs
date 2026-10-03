@@ -29,6 +29,7 @@ for (const [route, asset] of [
   ["/projects/grid-eater", "/projects-grid-eater.html"],
   ["/projects/cdip", "/projects-cdip.html"],
   ["/services", "/services.html"],
+  ["/services/business-commercial-development", "/services-business-commercial-development.html"],
   ["/contact", "/contact.html"],
 ]) {
   test(route+" remains local", async()=>{
