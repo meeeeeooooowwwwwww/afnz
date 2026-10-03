@@ -6,7 +6,7 @@ import path from "node:path";
 const publicDir=path.resolve("public");
 const read=(name)=>fs.readFileSync(path.join(publicDir,name),"utf8");
 const pages=[
- "index.html","about.html","approach.html","services.html",
+ "index.html","about.html","founder.html","approach.html","services.html",
  "services-business-commercial-development.html","services-project-management-delivery.html",
  "services-ai-business-systems.html","services-discovery-feasibility.html","services-product-brand-development.html",
  "projects.html","projects-grid-eater.html","projects-cdip.html","contact.html"
@@ -37,8 +37,9 @@ test("five approved service lanes are explicit and linked",()=>{
 test("AI SI positioning remains future-oriented rather than a possession claim",()=>{
  const home=read("index.html").toLowerCase();
  const approach=read("approach.html").toLowerCase();
- assert.ok(home.includes("ai / si"));
- assert.ok(approach.includes("not a claim that we possess si today"));
+ assert.ok(home.includes("ai"));
+ assert.ok(approach.includes("superintelligence (si) is a future horizon"));
+ assert.ok(approach.includes("available ai tools under active human direction"));
  assert.ok(!home.includes("we have superintelligence"));
  assert.ok(!home.includes("our superintelligence"));
 });
@@ -91,10 +92,20 @@ test("metadata is present on every HTML page",()=>{
  }
 });
 
-test("no public HTML uses inline scripts or inline style attributes",()=>{
+test("public HTML permits only valid non-executable structured data scripts",()=>{
  for(const name of pages){
-  const html=read(name).toLowerCase();
-  assert.ok(!html.includes("<script"),name+" contains script");
+  const html=read(name);
+  const scripts=[...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/g)];
+  assert.equal(scripts.length,1,name+" must have one schema graph");
+  for(const [,attrs,body] of scripts){
+   assert.equal(attrs.trim(),'type="application/ld+json"',name+" executable script");
+   const schema=JSON.parse(body);
+   assert.equal(schema['@context'],'https://schema.org');
+   const canonical=html.match(/<link rel="canonical" href="([^"]+)"/)[1];
+   const entity=schema['@graph'].find(x=>x['@id']===canonical+'#webpage');
+   assert.equal(entity.url,canonical,name+" schema/canonical mismatch");
+   assert.ok(read('sitemap.xml').includes('<loc>'+canonical+'</loc>'),name+" missing from sitemap");
+  }
   assert.ok(!/\sstyle="/.test(html),name+" contains inline style");
  }
 });

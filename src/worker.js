@@ -3,6 +3,7 @@ import { renderHeader, renderFooter } from "./site-shell.js";
 const ROUTES = new Map([
   ["/", "/index.html"], ["/index.html", "/index.html"],
   ["/about", "/about.html"], ["/about/", "/about.html"], ["/about.html", "/about.html"],
+  ["/about/david-ruck", "/founder.html"], ["/about/david-ruck/", "/founder.html"],
   ["/approach", "/approach.html"], ["/approach/", "/approach.html"], ["/approach.html", "/approach.html"],
   ["/services", "/services.html"], ["/services/", "/services.html"], ["/services.html", "/services.html"],
   ["/services/business-commercial-development", "/services-business-commercial-development.html"], ["/services/business-commercial-development/", "/services-business-commercial-development.html"],
@@ -36,6 +37,11 @@ function withHeaders(response, isAsset = false) {
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    if (url.hostname === "www.americafirst.co.nz") {
+      url.hostname = "americafirst.co.nz";
+      url.protocol = "https:";
+      return Response.redirect(url.toString(), 301);
+    }
     if (url.pathname.startsWith("/assets/")) return withHeaders(await env.ASSETS.fetch(request), true);
 
     const assetPath = ROUTES.get(url.pathname);
