@@ -50,3 +50,11 @@ test("www redirects permanently to the canonical host without losing the path",a
  assert.equal(response.status,301);
  assert.equal(response.headers.get("location"),"https://americafirst.co.nz/about/david-ruck?source=profile");
 });
+
+test("favicon and manifest routes remain local", async()=>{
+ for(const [route,asset] of [["/favicon.ico","/favicon.ico"],["/apple-touch-icon.png","/apple-touch-icon.png"],["/site.webmanifest","/site.webmanifest"],["/browserconfig.xml","/browserconfig.xml"]]){
+  const response=await worker.fetch(new Request("https://americafirst.co.nz"+route),env);
+  assert.equal(response.status,200,route);
+  assert.equal(await response.text(),asset,route);
+ }
+});

@@ -37,6 +37,10 @@ for(const [route,marker] of routes){
   assert.ok(body.includes("AMERICA FIRST"));
   assert.ok(body.includes("AI · BUSINESS DEVELOPMENT · PROJECT DELIVERY"));
   assert.ok(body.includes("Founded by: David A. Ruck."));
+  assert.ok(body.includes('/favicon.ico'));
+  assert.ok(body.includes('/favicon.svg'));
+  assert.ok(body.includes('/apple-touch-icon.png'));
+  assert.ok(body.includes('/site.webmanifest'));
   assert.ok(!body.includes('id="site-header"'));
   assert.ok(!body.includes('id="site-footer"'));
  });
@@ -73,4 +77,12 @@ test("premium service artwork uses individual local assets rather than the retir
   assert.ok(css.includes("/assets/"+name),name);
  }
  assert.ok(!css.includes("services-ai-nz.webp"));
+});
+
+test("complete favicon set is served as cacheable local assets",async()=>{
+ for(const asset of ["/favicon.ico","/favicon.svg","/favicon-16x16.png","/favicon-32x32.png","/favicon-48x48.png","/apple-touch-icon.png","/android-chrome-192x192.png","/android-chrome-512x512.png","/mstile-150x150.png","/site.webmanifest","/browserconfig.xml"]){
+  const response=await worker.fetch("https://americafirst.co.nz"+asset);
+  assert.equal(response.status,200,asset);
+  assert.match(response.headers.get("cache-control")||"",/max-age=86400/,asset);
+ }
 });
