@@ -15,13 +15,38 @@ const ROUTES = new Map([
   ["/projects/grid-eater", "/projects-grid-eater.html"], ["/projects/grid-eater/", "/projects-grid-eater.html"],
   ["/projects/cdip", "/projects-cdip.html"], ["/projects/cdip/", "/projects-cdip.html"],
   ["/contact", "/contact.html"], ["/contact/", "/contact.html"], ["/contact.html", "/contact.html"],
-  ["/styles.css", "/styles.css"], ["/favicon.svg", "/favicon.svg"], ["/robots.txt", "/robots.txt"], ["/sitemap.xml", "/sitemap.xml"],
+  ["/styles.css", "/styles.css"],
+  ["/favicon.ico", "/favicon.ico"], ["/favicon.svg", "/favicon.svg"],
+  ["/favicon-16x16.png", "/favicon-16x16.png"], ["/favicon-32x32.png", "/favicon-32x32.png"], ["/favicon-48x48.png", "/favicon-48x48.png"],
+  ["/apple-touch-icon.png", "/apple-touch-icon.png"], ["/android-chrome-192x192.png", "/android-chrome-192x192.png"], ["/android-chrome-512x512.png", "/android-chrome-512x512.png"],
+  ["/mstile-150x150.png", "/mstile-150x150.png"], ["/site.webmanifest", "/site.webmanifest"], ["/browserconfig.xml", "/browserconfig.xml"],
+  ["/robots.txt", "/robots.txt"], ["/sitemap.xml", "/sitemap.xml"],
 ]);
 
 class ReplaceWith {
   constructor(html) { this.html = html; }
   element(element) { element.replace(this.html, { html: true }); }
 }
+
+class RemoveElement {
+  element(element) { element.remove(); }
+}
+
+class AppendHtml {
+  constructor(html) { this.html = html; }
+  element(element) { element.append(this.html, { html: true }); }
+}
+
+const FAVICON_HEAD = [
+  '<link rel="icon" href="/favicon.ico" sizes="any">',
+  '<link rel="icon" type="image/svg+xml" href="/favicon.svg">',
+  '<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">',
+  '<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">',
+  '<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">',
+  '<link rel="manifest" href="/site.webmanifest">',
+  '<meta name="msapplication-TileColor" content="#071b2e">',
+  '<meta name="msapplication-config" content="/browserconfig.xml">'
+].join("");
 
 function withHeaders(response, isAsset = false) {
   const headers = new Headers(response.headers);
@@ -53,9 +78,14 @@ export default {
     const response = await env.ASSETS.fetch(new Request(assetUrl, request));
     const contentType = response.headers.get("content-type") || "";
 
-    if (!contentType.includes("text/html")) return withHeaders(response, assetPath.endsWith(".css") || assetPath.endsWith(".svg"));
+    if (!contentType.includes("text/html")) {
+      const cacheAsAsset = assetPath.endsWith(".css") || assetPath.endsWith(".svg") || assetPath.endsWith(".png") || assetPath.endsWith(".ico") || assetPath.endsWith(".webmanifest") || assetPath === "/browserconfig.xml";
+      return withHeaders(response, cacheAsAsset);
+    }
 
     const transformed = new HTMLRewriter()
+      .on('link[rel="icon"]', new RemoveElement())
+      .on("head", new AppendHtml(FAVICON_HEAD))
       .on("#site-header", new ReplaceWith(renderHeader(url.pathname)))
       .on("#site-footer", new ReplaceWith(renderFooter()))
       .transform(response);

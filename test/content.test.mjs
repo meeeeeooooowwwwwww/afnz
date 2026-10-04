@@ -123,3 +123,16 @@ test("premium NZ robot imagery replaces flat service placeholders",()=>{
  }
  assert.ok(!css.includes('/assets/services-ai-nz.webp'));
 });
+
+test("full favicon suite is present and manifest is coherent",()=>{
+ const files=["favicon.ico","favicon.svg","favicon-16x16.png","favicon-32x32.png","favicon-48x48.png","apple-touch-icon.png","android-chrome-192x192.png","android-chrome-512x512.png","mstile-150x150.png","site.webmanifest","browserconfig.xml"];
+ for(const name of files) assert.ok(fs.existsSync(path.join(publicDir,name)),name);
+ const manifest=JSON.parse(read("site.webmanifest"));
+ assert.equal(manifest.name,"America First Limited");
+ assert.equal(manifest.short_name,"America First");
+ assert.ok(manifest.icons.some(x=>x.src==="/android-chrome-192x192.png"&&x.sizes==="192x192"));
+ assert.ok(manifest.icons.some(x=>x.src==="/android-chrome-512x512.png"&&x.sizes==="512x512"));
+ const svg=read("favicon.svg");
+ assert.ok(svg.includes("#B31942"));
+ assert.ok(svg.includes("#0A3161"));
+});
