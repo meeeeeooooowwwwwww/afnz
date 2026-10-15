@@ -1,5 +1,5 @@
 {
-  "requestedAt": "2026-10-15T01:32:40.467Z",
-  "operation": "deploy-exact-sha",
-  "targetSha": "da19ff1523fe9bb6a668fef881bf5b0a79532961"
+  "requestedAt": null,
+  "operation": "none",
+  "targetSha": null
 }
