@@ -82,12 +82,17 @@ test("all illustrative images carry explicit dimensions",()=>{
  }
 });
 
-test("David Ruck founder profile uses distinct truthful person identity SEO",()=>{
- const html=read("founder.html");
- assert.ok(html.includes("David Ruck | Christchurch Founder of America First Limited"));
- assert.ok(html.includes("\\\"alternateName\\\":[\\\"David A. Ruck\\\",\\\"Dave Ruck\\\"]"));
- assert.ok(html.includes("https://davidaruck.com/"));
- assert.ok(html.includes("https://www.linkedin.com/in/davidaruck/"));
+test("Founder page has truthful David Ruck identity and canonical links",()=>{
+  const html=read("founder.html");
+  assert.ok(html.includes("David Ruck | Christchurch Founder of America First Limited"));
+  const match=html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/);
+  assert.ok(match,"Founder structured data missing");
+  const graph=JSON.parse(match[1])["@graph"];
+  const person=graph.find(x=>x["@type"]==="Person");
+  assert.equal(person.name,"David Ruck");
+  assert.deepEqual(person.alternateName,["David A. Ruck","Dave Ruck"]);
+  assert.ok(person.sameAs.includes("https://davidaruck.com/"));
+  assert.ok(person.sameAs.includes("https://www.linkedin.com/in/davidaruck/"));
 });
 
 test("metadata is present on every HTML page",()=>{
@@ -120,8 +125,7 @@ test("public HTML permits only valid non-executable structured data scripts",()=
 
 
 test("premium NZ robot imagery replaces flat service placeholders",()=>{
- const joined=pages.map(read).join("
-");
+ const joined=pages.map(read).join(String.fromCharCode(10));
  assert.ok(joined.includes("/assets/hero-ai-nz.webp"));
  assert.ok(!joined.includes("/assets/hero-ai-nz.svg"));
  const css=read("styles.css");
