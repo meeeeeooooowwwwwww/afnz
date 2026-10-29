@@ -82,6 +82,14 @@ test("all illustrative images carry explicit dimensions",()=>{
  }
 });
 
+test("David Ruck founder profile uses distinct truthful person identity SEO",()=>{
+ const html=read("founder.html");
+ assert.ok(html.includes("David Ruck | Christchurch Founder of America First Limited"));
+ assert.ok(html.includes("\\\"alternateName\\\":[\\\"David A. Ruck\\\",\\\"Dave Ruck\\\"]"));
+ assert.ok(html.includes("https://davidaruck.com/"));
+ assert.ok(html.includes("https://www.linkedin.com/in/davidaruck/"));
+});
+
 test("metadata is present on every HTML page",()=>{
  for(const name of pages){
   const html=read(name);
@@ -112,7 +120,8 @@ test("public HTML permits only valid non-executable structured data scripts",()=
 
 
 test("premium NZ robot imagery replaces flat service placeholders",()=>{
- const joined=pages.map(read).join("\n");
+ const joined=pages.map(read).join("
+");
  assert.ok(joined.includes("/assets/hero-ai-nz.webp"));
  assert.ok(!joined.includes("/assets/hero-ai-nz.svg"));
  const css=read("styles.css");
