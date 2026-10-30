@@ -20,10 +20,10 @@ const routes=[
  ["/projects","A history of building."],
  ["/projects/grid-eater","America First is behind GRID EATER."],
  ["/projects/cdip","Developing the case for Canterbury"],
- ["/projects/websites/kiwi-gardeners","Local services · Christchurch"],
- ["/projects/websites/natalie-g-winters","Publishing and media"],
- ["/projects/websites/america-first-nz","Video-led media presence"],
- ["/projects/websites/david-ruck","Founder website and career archive"],
+ ["/projects/websites/kiwi-gardeners","Kiwi Gardeners:"],
+ ["/projects/websites/natalie-g-winters","Natalie G. Winters:"],
+ ["/projects/websites/america-first-nz","America First NZ:"],
+ ["/projects/websites/david-ruck","David Ruck:"],
  ["/contact","Let’s put your next move into focus."]
 ];
 
