@@ -9,7 +9,9 @@ const pages=[
  "index.html","about.html","founder.html","approach.html","services.html",
  "services-business-commercial-development.html","services-project-management-delivery.html",
  "services-ai-business-systems.html","services-discovery-feasibility.html","services-product-brand-development.html",
- "projects.html","projects-grid-eater.html","projects-cdip.html","contact.html"
+ "projects.html","projects-grid-eater.html","projects-cdip.html",
+ "projects-websites-kiwi-gardeners.html","projects-websites-natalie-g-winters.html",
+ "projects-websites-america-first-nz.html","projects-websites-david-ruck.html","contact.html"
 ];
 
 test("all public pages use global shell placeholders instead of copied header/footer",()=>{
@@ -148,4 +150,18 @@ test("full favicon suite is present and manifest is coherent",()=>{
  const svg=read("favicon.svg");
  assert.ok(svg.includes("#B31942"));
  assert.ok(svg.includes("#0A3161"));
+});
+
+
+test("all six live website projects appear with images and honest responsibility links",()=>{
+ const html=read("projects.html");
+ for(const label of ["Kiwi Gardeners","Natalie G. Winters","America First NZ","David Ruck","GRID EATER","America First Limited"]){
+  assert.ok(html.includes("<h3>"+label+"</h3>"),"Missing portfolio card: "+label);
+ }
+ assert.equal((html.match(/class="corporate-portfolio-card"/g)||[]).length,6);
+ assert.ok(html.includes("Dallas Timpson independently provides"));
+ for(const slug of ["kiwi-gardeners","natalie-g-winters","america-first-nz","david-ruck"]){
+  assert.ok(html.includes("/projects/websites/"+slug));
+  assert.ok(fs.existsSync(path.join(publicDir,"assets","portfolio-"+slug+".svg")));
+ }
 });

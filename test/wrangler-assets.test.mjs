@@ -20,6 +20,10 @@ const routes=[
  ["/projects","A history of building."],
  ["/projects/grid-eater","America First is behind GRID EATER."],
  ["/projects/cdip","Developing the case for Canterbury"],
+ ["/projects/websites/kiwi-gardeners","Kiwi Gardeners:"],
+ ["/projects/websites/natalie-g-winters","Natalie G. Winters:"],
+ ["/projects/websites/america-first-nz","America First NZ:"],
+ ["/projects/websites/david-ruck","David Ruck:"],
  ["/contact","Let’s put your next move into focus."]
 ];
 
@@ -47,7 +51,7 @@ for(const [route,marker] of routes){
 }
 
 test("illustrative assets are served locally",async()=>{
- for(const asset of ["/assets/hero-ai-nz.webp","/assets/service-commercial.webp","/assets/service-projects.webp","/assets/service-ai.webp","/assets/service-feasibility.webp","/assets/service-product.webp","/assets/tech-grid.svg","/assets/tech-nodes.svg"]){
+ for(const asset of ["/assets/hero-ai-nz.webp","/assets/service-commercial.webp","/assets/service-projects.webp","/assets/service-ai.webp","/assets/service-feasibility.webp","/assets/service-product.webp","/assets/tech-grid.svg","/assets/tech-nodes.svg","/assets/portfolio-kiwi-gardeners.svg","/assets/portfolio-natalie-g-winters.svg","/assets/portfolio-america-first-nz.svg","/assets/portfolio-david-ruck.svg"]){
   const response=await worker.fetch("https://americafirst.co.nz"+asset);
   assert.equal(response.status,200,asset);
   assert.match(response.headers.get("cache-control")||"",/max-age=86400/);
